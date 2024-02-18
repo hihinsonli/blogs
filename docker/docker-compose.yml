@@ -1,0 +1,77 @@
+version: '3.8'
+services:
+  hinson-blog-db:
+    image: mariadb
+    volumes:
+      - hinson-blog-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: <Hidden password>
+      MYSQL_DATABASE: <Hidden db name>
+      MYSQL_USER: <Hidden db user>
+      MYSQL_PASSWORD: <Hidden db user password>
+    networks:
+      - wordpress-network
+
+  hinson-blog:
+    depends_on:
+      - hinson-blog-db
+    image: wordpress:latest
+    volumes:
+      - hinson-blog-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: hinson-blog-db
+      WORDPRESS_DB_USER: <Hidden db user>
+      WORDPRESS_DB_PASSWORD: <Hidden db user password>
+      WORDPRESS_DB_NAME: <Hidden db name>
+    networks:
+      - wordpress-network
+
+  ray-blog-db:
+    image: mariadb
+    volumes:
+      - ray-blog-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: <Hidden password>
+      MYSQL_DATABASE: <Hidden db name>
+      MYSQL_USER: <Hidden db user>
+      MYSQL_PASSWORD: <Hidden db user password>
+    networks:
+      - wordpress-network
+
+  ray-blog:
+    depends_on:
+      - ray-blog-db
+    image: wordpress:latest
+    volumes:
+      - ray-blog-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: ray-blog-db
+      WORDPRESS_DB_USER: <Hidden db user>
+      WORDPRESS_DB_PASSWORD: <Hidden db user password>
+      WORDPRESS_DB_NAME: <Hidden db name>
+    networks:
+      - wordpress-network
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
+    ports:
+      - "8082:8082"
+      - "8083:8083"
+    depends_on:
+      - hinson-blog
+      - ray-blog
+    networks:
+      - wordpress-network
+
+volumes:
+  hinson-blog-db:
+  hinson-blog-data:
+  ray-blog-db:
+  ray-blog-data:
+
+networks:
+  wordpress-network:
+    external: true
