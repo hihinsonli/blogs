@@ -2,6 +2,7 @@ version: '3.8'
 services:
   hinson-blog-db:
     image: mariadb
+    container_name: hinson-blog-db
     volumes:
       - hinson-blog-db:/var/lib/mysql
     environment:
@@ -16,6 +17,7 @@ services:
     depends_on:
       - hinson-blog-db
     image: wordpress:latest
+    container_name: hinson-blog
     volumes:
       - hinson-blog-data:/var/www/html
     environment:
@@ -28,6 +30,7 @@ services:
 
   ray-blog-db:
     image: mariadb
+    container_name: ray-blog-db
     volumes:
       - ray-blog-db:/var/lib/mysql
     environment:
@@ -41,6 +44,7 @@ services:
   ray-blog:
     depends_on:
       - ray-blog-db
+    container_name: ray-blog
     image: wordpress:latest
     volumes:
       - ray-blog-data:/var/www/html
@@ -53,13 +57,15 @@ services:
       - wordpress-network
 
   nginx:
+    container_name: nginx
     image: nginx:latest
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./certs:/etc/nginx/certs
+      - /etc/nginx/conf.d:/etc/nginx/conf.d
+      - /root/certs/:/etc/nginx/certs
+      - /etc/nginx/sites-enabled:/etc/nginx/sites-enabled
     ports:
-      - "8082:8082"
-      - "8083:8083"
+      - "443:443"
+      - "80:80"
     depends_on:
       - hinson-blog
       - ray-blog
