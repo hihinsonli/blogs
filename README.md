@@ -2,7 +2,6 @@
 Our blogs operate on container-based WordPress projects, hosted on a dedicated single VPS. Nginx serves as the proxy for managing traffic.
 <br>
 ## Hinson's blog: https://blog.hinsonli.com
-<br>
 ## Ray's blog: https://ray-blog.hinsonli.com
 
 <br>
